@@ -1,0 +1,35 @@
+FROM node:8-alpine AS builder
+LABEL type="builder"
+WORKDIR /app
+
+# fix for alpine image for running on aws. https://github.com/nodejs/docker-node/issues/813
+RUN npm config set unsafe-perm=true
+
+RUN npm i -g typescript
+
+COPY . .
+
+RUN npm run-script build:cd
+
+FROM node:8-alpine AS prod
+LABEL type="prod"
+WORKDIR /app
+
+RUN npm config set unsafe-perm=true
+
+COPY --from=builder /app/build .
+COPY --from=builder /app/node_modules ./node_modules
+
+EXPOSE 3000/tcp
+CMD [ "node", "index.js" ]
+
+FROM prod AS test
+LABEL type="test"
+WORKDIR /app
+
+COPY test ./test
+COPY package*.json ./
+
+RUN npm run-script build:cd:test
+
+CMD ["npm", "run-script", "test:cd"]

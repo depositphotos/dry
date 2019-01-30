@@ -1,0 +1,15 @@
+{
+  "version": "1.0.1",
+  "dependencies": {
+    "pino": "^5.11.1",
+    "pino-pretty": "^2.5.0"
+  },
+  "bin": {
+    "dry": "./cli.js"
+  },
+  "name": "@depositphotos/dry",
+  "repository": "github:depositphotos/dry",
+  "main": "cli.js",
+  "description": "",
+  "license": "ISC"
+}
